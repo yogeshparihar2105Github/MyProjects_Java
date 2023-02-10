@@ -1,6 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-public class GamePlay extends JPanel {
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class GamePlay extends JPanel implements KeyListener, ActionListener {
 
     private int[] snakeXLen = new int[750];
     private int[] snakeYLen = new int[750];
@@ -22,9 +27,14 @@ public class GamePlay extends JPanel {
     private int lenghtOfSnake = 3;
     private int  moves = 0;
     private ImageIcon titleImage;
+
     public GamePlay()
     {
-
+        addKeyListener(this);
+        setFocusable(true);
+        setFocusTraversalKeysEnabled(true);
+        timer = new Timer(delay, this);
+        timer.start();
     }
     public void paint(Graphics g)
     {
@@ -87,6 +97,186 @@ public class GamePlay extends JPanel {
         }
 
         g.dispose();
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if(right)
+        {
+            for(int i = lenghtOfSnake - 1; i >= 0; i--)
+            {
+                snakeYLen[i+1] = snakeYLen[i];
+            }
+            for(int i = lenghtOfSnake; i >= 0; i--)
+            {
+                if(i==0)
+                {
+                    snakeXLen[i] = snakeXLen[i] + 25;
+                }
+                else
+                {
+                    snakeXLen[i] = snakeXLen[i-1];
+                }
+                if(snakeXLen[i] > 850)
+                {
+                    snakeXLen[i] = 25;
+                }
+            }
+            repaint();
+        }
+        if(left)
+        {
+            for(int i = lenghtOfSnake - 1; i >= 0; i--)
+            {
+                snakeYLen[i+1] = snakeYLen[i];
+            }
+            for(int i = lenghtOfSnake; i >= 0; i--)
+            {
+                if(i==0)
+                {
+                    snakeXLen[i] = snakeXLen[i] - 25;
+                }
+                else
+                {
+                    snakeXLen[i] = snakeXLen[i-1];
+                }
+                if(snakeXLen[i] < 25)
+                {
+                    snakeXLen[i] = 850;
+                }
+            }
+            repaint();
+        }
+
+        if(up)
+        {
+            for(int i = lenghtOfSnake - 1; i >= 0; i--)
+            {
+                snakeXLen[i+1] = snakeXLen[i];
+            }
+            for(int i = lenghtOfSnake; i >= 0; i--)
+            {
+                if(i==0)
+                {
+                    snakeYLen[i] = snakeYLen[i] - 25;
+                }
+                else
+                {
+                    snakeYLen[i] = snakeYLen[i-1];
+                }
+                if(snakeYLen[i] < 75)
+                {
+                    snakeYLen[i] = 625;
+                }
+            }
+            repaint();
+        }
+        if(down)
+        {
+            for(int i = lenghtOfSnake - 1; i >= 0; i--)
+            {
+                snakeXLen[i+1] = snakeXLen[i];
+            }
+            for(int i = lenghtOfSnake; i >= 0; i--)
+            {
+                if(i==0)
+                {
+                    snakeYLen[i] = snakeYLen[i] + 25;
+                }
+                else
+                {
+                    snakeYLen[i] = snakeYLen[i-1];
+                }
+                if(snakeYLen[i] > 625)
+                {
+                    snakeYLen[i] = 75;
+                }
+            }
+            repaint();
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+        //right move
+        if(e.getKeyCode()== KeyEvent.VK_RIGHT)
+        {
+            moves++;
+            if(left != true)
+            {
+                right = true;
+            }
+            else
+            {
+                right = false;
+                left = true;
+            }
+            up = false;
+            down = false;
+        }
+
+        //left move
+        if(e.getKeyCode()== KeyEvent.VK_LEFT)
+        {
+            moves++;
+            if(right != true)
+            {
+                left = true;
+            }
+            else
+            {
+                right = true;
+                left = false;
+            }
+            up = false;
+            down = false;
+        }
+
+        //up move
+        if(e.getKeyCode()== KeyEvent.VK_UP)
+        {
+            moves++;
+            if(down != true)
+            {
+                up = true;
+            }
+            else
+            {
+                up = false;
+                down = true;
+            }
+            left = false;
+            right = false;
+        }
+
+        //down move
+        if(e.getKeyCode()== KeyEvent.VK_DOWN)
+        {
+            moves++;
+            if(up != true)
+            {
+                down = true;
+            }
+            else
+            {
+                down = false;
+                up = true;
+            }
+            left = false;
+            right = false;
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
     }
 }
